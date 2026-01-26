@@ -16,7 +16,10 @@ export default function HomeRoutesLayout() {
         }
       }}
     >
-      <Stack.Screen name="index" options={{ headerShown: true }} />
+      <Stack.Screen name="index" options={{ 
+        headerShown: true,
+        headerTitle: "Shopping Lists"
+        }} />
     </Stack>
   )
 }
