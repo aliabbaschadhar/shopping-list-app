@@ -1,10 +1,21 @@
-import { Stack } from "expo-router";
+import Button from "@/components/ui/button";
+import { useUser } from "@clerk/clerk-expo";
+import { Redirect, router, Stack } from "expo-router";
 
 export default function HomeRoutesLayout() {
+  const { user } = useUser();
+
+  if (!user) {
+    // If user is not signed in
+    return <Redirect href={"/(auth)"} />;
+  }
+
   return (
     <Stack
       screenOptions={{
-        ...(process.env.EXPO_OS !== "ios") ? {} : {
+        ...(process.env.EXPO_OS !== "ios") ? {
+          headerTitleAlign: "center"
+        } : {
           headerLargeTitle: true,
           headerTransparent: true,
           headerBlurEffect: "systemChromeMaterial",
@@ -16,10 +27,37 @@ export default function HomeRoutesLayout() {
         }
       }}
     >
-      <Stack.Screen name="index" options={{ 
+      <Stack.Screen name="index" options={{
         headerShown: true,
         headerTitle: "Shopping Lists"
-        }} />
+      }} />
+      <Stack.Screen name="profile" options={{
+        presentation: "formSheet",
+        sheetGrabberVisible: true,
+        sheetAllowedDetents: [0.70, 1],
+        sheetCornerRadius: 18,
+      }} />
+      <Stack.Screen name="list/new/index" options={{
+        headerShown: false,
+        presentation: "formSheet",
+        sheetCornerRadius: 18,
+        sheetAllowedDetents: [0.90],
+        sheetGrabberVisible: true,
+      }} />
+      <Stack.Screen name="list/new/create" options={{
+        presentation: "formSheet",
+        sheetGrabberVisible: true,
+        sheetCornerRadius: 18,
+      }} />
+      <Stack.Screen name="list/new/scan" options={{
+        presentation: "fullScreenModal",
+        headerLargeTitle: false,
+        headerShown: true,
+        headerTitle: "Scan QR Code",
+        headerLeft: () => (
+          <Button variant="ghost" onPress={() => router.back()}>Cancel</Button>
+        )
+      }} />
     </Stack>
   )
 }
