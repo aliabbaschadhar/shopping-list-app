@@ -21,6 +21,7 @@ export default function SignUpScreen() {
 
   const onSignUpPress = async () => {
     if (!isLoaded) return;
+    console.log("Sign Up button is pressed!");
     setIsLoading(true);
     setErrors([]);
 
@@ -49,6 +50,7 @@ export default function SignUpScreen() {
 
   const onVerifyPress = async () => {
     if (!isLoaded) return;
+    console.log("Verify button is pressed!");
     setIsLoading(true);
     setErrors([]);
 

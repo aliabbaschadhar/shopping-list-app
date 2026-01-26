@@ -1,23 +1,50 @@
 import { ThemedText } from "@/components/themed-text";
-import { useSignIn } from "@clerk/clerk-expo";
-import { View } from "react-native";
+import { isClerkAPIResponseError, useSignIn } from "@clerk/clerk-expo";
+import { Alert, View } from "react-native";
 import { Link, useRouter } from "expo-router";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import Button from "@/components/ui/button";
 import TextInput from "@/components/ui/text-input";
 import { BodyScrollView } from "@/components/ui/BodyScrollView";
+import { ClerkAPIError } from "@clerk/types";
 
 export default function SignInScreen() {
   const [emailAddress, setEmailAddress] = useState("");
   const [password, setPassword] = useState("");
   const [isSigningIn, setIsSigningIn] = useState(false);
+  const [errors, setErrors] = useState<ClerkAPIError[]>([]);
 
   const { signIn, setActive, isLoaded } = useSignIn();
   const router = useRouter();
 
-  const onSignInPress = async () => {
+  const onSignInPress = useCallback(async () => {
     if (!isLoaded) return;
-  }
+    setIsSigningIn(true);
+
+    try {
+      console.log("Sign In button pressed!")
+      const signInAttempt = await signIn.create({
+        identifier: emailAddress,
+        password
+      })
+
+      if (signInAttempt.status === "complete") {
+        await setActive({ session: signInAttempt.createdSessionId });
+        router.replace("/");
+      } else {
+        console.error(JSON.stringify(signInAttempt, null, 2))
+      }
+      setIsSigningIn(false);
+    } catch (err: any) {
+      console.error("Sign in error:", err);
+      Alert.alert("Error", "Failed to sign in. Please check your credentials.");
+      if (isClerkAPIResponseError(err)) {
+        setErrors(err.errors);
+      }
+    } finally {
+      setIsSigningIn(false);
+    }
+  }, [isLoaded, emailAddress, password, router]);
 
   return (
     <BodyScrollView
@@ -40,6 +67,13 @@ export default function SignInScreen() {
         placeholder="Enter your password"
         secureTextEntry
       />
+
+      {errors.map((error, index) => (
+        <ThemedText key={index} style={{ color: 'red', marginTop: 8 }}>
+          {error.longMessage || error.message}
+        </ThemedText>
+      ))}
+
       <Button
         onPress={onSignInPress}
         loading={isSigningIn}
