@@ -1,17 +1,30 @@
-import { ThemedText } from "@/components/themed-text";
 import { BodyScrollView } from "@/components/ui/BodyScrollView";
 import Button from "@/components/ui/button";
 import TextInput from "@/components/ui/text-input";
-import { appleBlue } from "@/constants/theme";
+import { appleBlue, backgroundColors, emojies } from "@/constants/theme";
+import { useListCreationContext } from "@/context/ListCreationContext";
 import { Link } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
 export default function CreateNewListScreen() {
   const [listName, setListName] = useState("");
   const [description, setDescription] = useState("");
+  const { selectedEmoji, setSelectedEmoji, setSelectedColor, selectedColor } = useListCreationContext();
   const handleCreateList = () => { }
+
+  useEffect(() => {
+    setSelectedEmoji(emojies[Math.floor(Math.random() * emojies.length)]);
+    setSelectedColor(backgroundColors[Math.floor(Math.random() * backgroundColors.length)]);
+
+    return () => {
+      setSelectedColor('');
+      setSelectedEmoji('');
+    }
+  }, [])
+
   return (
+
     <BodyScrollView contentContainerStyle={styles.scrollViewContent}>
       <View style={styles.inputContainer}>
         <TextInput
@@ -27,27 +40,28 @@ export default function CreateNewListScreen() {
         />
         <Link
           href={{
-            pathname: "/"
+            pathname: "/emoji-picker"
           }}
-          style={styles.emojiButton}
+          style={[styles.emojiButton, {
+            borderColor: selectedColor,
+          }]}
         >
           <View style={styles.emojiContainer}>
-            <Text>{"🥇"}</Text>
+            <Text style={styles.emojiText}>{selectedEmoji}</Text>
           </View>
         </Link>
         <Link
           href={{
-            pathname: "/"
+            pathname: "/color-picker"
           }}
-          style={styles.colorButton}
+          style={[styles.colorButton, {
+            borderColor: selectedColor,
+          }]}
         >
           <View style={styles.colorContainer}>
-            <View style={{
-              width: 16,
-              height: 16,
-              borderRadius: 100,
-              backgroundColor: appleBlue,
-            }} />
+            <View style={[styles.colorCircle, {
+              backgroundColor: selectedColor,
+            }]} />
           </View>
         </Link>
       </View>
@@ -104,6 +118,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  emojiText: {
+    fontSize: 22,
+  },
   descriptionInput: {
     padding: 0,
   },
@@ -121,5 +138,10 @@ const styles = StyleSheet.create({
     height: 28,
     alignItems: "center",
     justifyContent: "center",
+  },
+  colorCircle: {
+    width: 26,
+    height: 26,
+    borderRadius: 100,
   },
 });
