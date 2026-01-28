@@ -45,9 +45,8 @@ export default function HomeRoutesLayout() {
         sheetGrabberVisible: true,
       }} />
       <Stack.Screen name="list/new/create" options={{
-        presentation: "formSheet",
-        sheetGrabberVisible: true,
-        sheetCornerRadius: 18,
+        headerShown: true,
+        headerTitle: "Create New List",
       }} />
       <Stack.Screen name="list/new/scan" options={{
         presentation: "fullScreenModal",

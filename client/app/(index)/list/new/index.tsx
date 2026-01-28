@@ -55,7 +55,7 @@ export default function NewListScreen() {
       <View style={{
         gap: 16,
       }}>
-        <Button> Create new list</Button>
+        <Button onPress={() => router.push("/(index)/list/new/create")}> Create new list</Button>
 
         <View style={{
           flexDirection: "row",
