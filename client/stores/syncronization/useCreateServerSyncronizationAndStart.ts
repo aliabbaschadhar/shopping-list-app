@@ -16,7 +16,7 @@ export const useCreateServerSyncronizationAndStart = <Schemas extends OptionalSc
       // Create the synchronizer
       const synchronizer = await createWsSynchronizer(
         store,
-        new ReconnectingWebSocket(SYNC_SERVER_URL + storeId, [], {
+        new ReconnectingWebSocket(SYNC_SERVER_URL + "/" + storeId, [], {
           maxReconnectionDelay: 1000,
           connectionTimeout: 1000,
         })

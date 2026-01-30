@@ -58,7 +58,6 @@ const {
 } = UiReact as UiReact.WithSchemas<Schemas>;
 
 const useStoreId = (listId: string) => STORE_ID_PREFIX + listId;
-const { userId, nickname } = useUserIdAndNickname();
 
 // Create, persist, and sync a store containing the shopping list and its products.
 export default function ShoppingListStore({
@@ -69,6 +68,7 @@ export default function ShoppingListStore({
   initialContentJson?: string;
 }) {
   const storeId = useStoreId(listId);
+  const { userId, nickname } = useUserIdAndNickname();
   const store = useCreateMergeableStore(
     () => createMergeableStore().setSchema(TABLES_SCHEMA, VALUES_SCHEMA)
   );
