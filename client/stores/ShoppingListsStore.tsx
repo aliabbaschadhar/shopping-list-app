@@ -50,8 +50,15 @@ export const useAddShoppingListCallback = () => {
         }
       ])
     })
+    return id;
   }, [store])
 }
+
+// Returns the IDs of all shopping lists for the current user.
+export const useShoppingListIds = () => useRowIds("lists", useStoreId());
+
+// Returns a callback which deletes a shopping list from the store.
+export const useDelShoppingListCallback = (id: string) => useDelRowCallback("lists", id, useStoreId());
 
 export default function ShoppingListsStore() {
   const storeId = useStoreId();
